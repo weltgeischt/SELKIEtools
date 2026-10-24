@@ -1,4 +1,9 @@
-# selkie_tools
+
+<p align="left">
+<img src="images/logoSelkie.png" alt="SPOOChunter logo" width="400">
+</p>
+
+# SELKIE-tools
 
 **S**wim **E**quipment **L**over's **K**omparative **I**nterval **E**valuation tools.
 
@@ -13,7 +18,7 @@ See [EXAMPLE](EXAMPLE.md) for a walkthrough
 
 ```bash
 
-git clone https://github.com/weltgeischt/selkie_tools.git #download from github
+git clone https://github.com/weltgeischt/selkietools.git #download from github
 
 cd SELKIEtools #navigate to toolbox
 
@@ -22,11 +27,8 @@ python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 
 #install
-pip install -e . #this installs the ecephys command and all dependencies
+pip install -e . #this installs the selkie command and all dependencies
 ```
-
-
-**Note for developers and tinkerers**: Since it's an editable install, any changes you make to the source take effect immediately.
 
 
 Set up your settings file once, if you don't want to repeat them each time:
@@ -36,10 +38,21 @@ cp SETTINGS/PATHS/general_paths.example.yml SETTINGS/PATHS/general_paths.yml
 # then edit general_paths.yml to point at your own config/output locations
 ```
 
+```bash
+export CSV=/home/weltgeischt/Dropbox/dc_paddles/dc_paddles_data/src/cow/activity_24766304204.csv   
+```
 
 
 
+```bash
+selkie process_csv $CSV -session_id KH241021 -N_cond 4
+#--> creates session_id__processed.xlsx in outdir specified in paths (if not further specified outifle)
+```
 
+```bash
+selkie plot_session KH241021 -debug
+#--> creates session_id__processed.xlsx in outdir specified in paths (if not further specified outifle)
+```
 
 
 
@@ -91,15 +104,6 @@ ecetools <command> -h
 
 ## Developer TODO
 
-
-## Developer Notes
-
-When changing the documentation of the script files, the [file_registry.py](src/ecetools/file_registry.py),
-or the [scripts_registry.py](src/ecetools/scripts_registry.py) run [update_readme.py](tools/update_readme.py) to update
-README.md accordingly.
-
-```bash
-cd SELKIEtools
-
-python tools/update_readme.py 
-```
+- [ ] Integrate visualization script from Runmaroe
+- [ ] Make database with paddles, subjects, sessions
+- [ ] Make multi-session/user evaluation

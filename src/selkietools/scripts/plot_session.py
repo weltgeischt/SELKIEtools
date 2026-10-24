@@ -1,32 +1,68 @@
+"""Transform Garmin split export csv to editable table
+
+After creation, please annotate __processed.xlsx table with your block and
+condition structure.
+
+Input: edited splits table (__processed.xlsx)
+Output: figures in folder named according to session id.
+
+"""
+
 import pandas as pd
 import yaml
-import re
 import os
-import sys
 import numpy as np
 import matplotlib.ticker as ticker
 import openpyxl as oxl
 from matplotlib import pyplot as plt
 import matplotlib as mpl
+from argparse import ArgumentParser, RawDescriptionHelpFormatter,ArgumentDefaultsHelpFormatter
+
+from selkietools.utils import helpers as hf
+from selkietools.utils import loading_tools as ltools
+import selkietools.paths as pathfns
+
+class RawDefaultsFormatter(ArgumentDefaultsHelpFormatter, RawDescriptionHelpFormatter):
+    pass
 
 
-#srcfile = '/home/weltgeischt/Dropbox/dc_paddles/dc_paddles_data/edited/KH_260928__edited.xlsx'
-srcfile = '/home/weltgeischt/Dropbox/dc_paddles/dc_paddles_data/edited/KH_261002__edited.xlsx'
-#srcfile = '/home/weltgeischt/Dropbox/dc_paddles/dc_paddles_data/edited/KH_260930__edited.xlsx'
-srcfile = '/home/weltgeischt/Dropbox/dc_paddles/dc_paddles_data/edited/KH_261005__edited.xlsx'
-srcfile = '/home/weltgeischt/Dropbox/dc_paddles/dc_paddles_data/edited/KH_261008__edited.xlsx'
+parser = ArgumentParser(description=__doc__, formatter_class=RawDefaultsFormatter)
+parser.add_argument('src',help='path to session file or just session id, if the session file is saved in outdir as specified by general_paths.yml')
+parser.add_argument('-figdir',default='default',help='directory where to save the figures')
+parser.add_argument('-fformat',default='default',help='figure format for example chunk psds')
+parser.add_argument('-pathpath',default='default',help='file with the general path settings, default: SETTINGS/PATHS/general_paths.yml')
+parser.add_argument('-outdir',default='default',help='where to write the toolbox-generated files to')
+parser.add_argument('-outfile',default='processed',help='file to write preprocessed table to, \
+                                                      if default it will write to outdir folder')
+parser.add_argument('-plot_splits',default=1,type=int,\
+                    help='also create plots for individual splits')
 
-codepath = '/home/weltgeischt/workspace/splitlab'
+parser.add_argument('-debug', action='store_true',
+                     help='drop into ipython right after parsing args, for interactive debugging')
 
-stylepath = os.path.join(pdict['settings']['mplstyle'])
-plt.style.use(stylepath)
+args = parser.parse_args()
 
-sys.path.append(codepath)
-from splitlab.utils import dataclasses as dc
-from splitlab.utils import helpers as hf
-from splitlab.utils import loading_tools as ltools
-from importlib import reload
-reload(dc)
+if args.debug:
+    from IPython import embed; embed()
+
+
+
+pdict = pathfns.load_settings(args.pathpath if args.pathpath != 'default' else None)
+
+logger = hf.Logger('plot_session',log_dir=pdict.get('log_dir'))
+
+fformat, basefigdir,outdir = pathfns.resolve_dict_fallbacks(pdict,args,['fformat','figdir','outdir'])
+
+if os.path.isfile(args.src):
+    srcfile = args.src
+else:
+    srcfile = pathfns.resolve_file('processed', args.src, outdir)
+logger.info('Plotting session data for file %s',srcfile)
+
+
+plt.style.use(pdict['settings']['mplstyle'])
+
+
 
 S = ltools.load_session(srcfile)
 
@@ -34,9 +70,7 @@ S = ltools.load_session(srcfile)
 reffn_rel = lambda vals,myrefval: (vals-myrefval)/myrefval*100
 reffn_abs = lambda vals,myrefval: vals-myrefval
 
-fformat = 'png'
-basefigdir = '/home/weltgeischt/Dropbox/dc_paddles/dc_paddles_data/figures/per_session'
-figdir = os.path.join(basefigdir,'%s_figs'%S.id,'attr_vs_blockrank')
+figdir = os.path.join(basefigdir,'%s_figs'%S.id)
 def figsaver(fig, nametag, closeit=True):
     figname = os.path.join(figdir,'%s__%s.%s'%(S.id,nametag,fformat))
     fdir = os.path.dirname(figname)
@@ -63,18 +97,15 @@ for I in S.intervals:
     I.get_pace_from_splits()#this avoids their rounding
 
 
-yattrs = ['pace','centerpace','strokes_per_min','strokes_per_25']#[,'pace'],'dur',
+yattrs = ['pace','centerpace','strokes_per_min']#[,'pace'],'dur',
+attrx = 'pos_in_block'
 for B in S.namedBlocks:
     TGs = [G for G in S.testgroups if G.block==B]
     refTG = [G for G in TGs if G.condition.is_ref][0]#todo allow for several testgroups then loop
 
-
-
-    attrx = 'pos_in_block'#todo also check time etc
     xvals =  [[getattr(I,attrx) for I in G.intervals if I.is_usable] for G in TGs]
 
     clist = [G.condition.color for G in TGs]
-
 
     def label_make_plot(myxvals,myyvals,y_hint=None):
         f,ax = plt.subplots(figsize=(4,3))
@@ -101,7 +132,7 @@ for B in S.namedBlocks:
         ax.set_ylabel(label_dict[attry])
         if attry == 'strokes': ax.yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
         f.tight_layout()
-        figsaver(f,'Block%s_%s'%(B.id,attry))
+        figsaver(f,os.path.join('blk%s','Block%s_%s'%(B.id,B.id,attry)))
 
         #same referenced to ref
         refval = np.mean([getattr(I,attry) for I in refTG.intervals if I.is_usable])#todo make also form splits to get rid of first/last line artifacts
@@ -110,14 +141,7 @@ for B in S.namedBlocks:
         f,ax = label_make_plot(xvals,yvals_reffed)
         ax.set_ylabel('%s %%diff to ref' % attry)
         f.tight_layout()
-        figsaver(f,'Block%s_%s_percdiff'%(B.id,attry))
-
-        '''#abs-diff
-        yvals_reffed = reffn_abs(yvals,refval)
-        f,ax = label_make_plot(xvals,yvals_reffed)
-        ax.set_ylabel('%s-%s_ref' %(attry,attry))
-        f.tight_layout()
-        figsaver(f,'Block%s_%s_absdiff'%(B.id,attry))'''
+        figsaver(f,os.path.join('blk%s','Block%s_%s_percdiff'%(B.id,B.id,attry)))
 
 #summary
 attrs = ['pace','centerpace','strokes_per_min','strokes_per_25']

@@ -1,5 +1,9 @@
 from pathlib import Path
-import os, yaml
+import os
+import yaml
+
+from selkietools.config_registry import CONFIGS
+from selkietools.file_registry import SUFFIXES
 
 PACKAGE_DIR = Path(__file__).resolve().parent        # .../SELKIEtools/src/selkietools
 REPO_ROOT   = PACKAGE_DIR.parent.parent               # .../SELKIEtools
@@ -58,3 +62,19 @@ def resolve_dict_fallbacks(pdict,args,key):
     else:
         return pdict.get(key) if getattr(args,key) == 'default' else getattr(args,key)
 
+
+
+def resolve_config_path(tag, pdict):
+    """Build and validate the path to a registered config file, without loading it."""
+    if tag not in CONFIGS:
+        raise KeyError(f"Unknown config tag '{tag}'. Known: {', '.join(CONFIGS)}")
+    cfg_path = Path(pdict['settings']['config']) / CONFIGS[tag]['filename']
+    if not cfg_path.is_file():
+        raise FileNotFoundError(f"Config '{tag}' not found at {cfg_path}")
+    return cfg_path
+
+def load_config(tag, pdict):
+    """Load a named config file's contents."""
+    cfg_path = resolve_config_path(tag, pdict)
+    with open(cfg_path, encoding='utf-8') as f:
+        return yaml.safe_load(f)
