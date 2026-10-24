@@ -1,0 +1,21 @@
+columns_cond:
+  - cond
+  - disp_cond
+  - disp_color
+  - is_ref
+  - pref_rank
+  - notes
+
+colormap_default: tab10
+
+
+columns_meta:
+  - date [yyyy/mm/dd]
+  - name
+  - poolname
+  - poolsize [m]
+  - pullbuoy
+  - paddle
+  - readiness [1-5]
+
+

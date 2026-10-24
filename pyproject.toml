@@ -1,0 +1,26 @@
+[build-system]
+requires = ['setuptools>=64']
+build-backend = 'setuptools.build_meta'
+
+
+[project]
+name = 'SELKIEtools'
+version = '0.1.0'
+requires-python = '>=3.9'
+dependencies = [
+    'GitPython>=3.1.47',
+    'h5py>=3.16.0',
+    'matplotlib>=3.10.9',
+    'numpy>=2.4.4',
+    'pandas>=3.0.2',
+    'PyYAML>=6.0.3',
+    'scipy>=1.17.1',
+    #'openpyxl>=',
+]#todo fix
+
+
+[project.scripts]
+selkie = 'selkietools.cli:main'
+
+[tool.setuptools.packages.find]
+where = ["src"]

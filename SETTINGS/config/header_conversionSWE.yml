@@ -1,0 +1,14 @@
+Intervaller: run_id
+Längder: lengths
+Distans: dist
+Tid: time
+Total tid: ctime
+Medeltempo: pace
+Bästa tempo: pace_max
+Medel-Swolf: swolf
+Medelpuls: hr_avg
+Maxpuls: hr_max
+Totalt antal simtag: strokes
+
+
+Summary_row: Sammanfattning

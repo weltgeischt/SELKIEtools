@@ -1,0 +1,14 @@
+Intervals: run_id
+Lengths: lengths
+Distance: dist
+Time: time
+Cumulative Time: ctime
+Avg Pace: pace
+Best Pace: pace_max
+Avg. Swolf: swolf
+Avg HR: hr_avg
+Max HR: hr_max
+Total Strokes: strokes
+
+
+Summary_row: Summary

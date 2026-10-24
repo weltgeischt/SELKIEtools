@@ -1,0 +1,7 @@
+outdir: '/home/weltgeischt/Dropbox/dc_paddles/dc_paddles_data/selkie_files/tables'
+figdir: '/home/weltgeischt/Dropbox/dc_paddles/dc_paddles_data/selkie_files/figures'
+settings:
+  config: '/home/weltgeischt/workspace/packages/SELKIEtools/SETTINGS/config'
+  mplstyle: '/home/weltgeischt/workspace/packages/SELKIEtools/SETTINGS/styles/presentation.mplstyle'
+log_dir: #enter dir where to log stuff here, if you want it to be logged
+fformat: 'png'
