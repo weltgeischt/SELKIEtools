@@ -7,7 +7,7 @@
 
 **S**wim **E**quipment **L**over's **K**omparative **I**nterval **E**valuation tools.
 
-Load down your Garmin swim data, preprocess, annotate, and visualize.
+Preprocess, annotate and visualize your swim data.
 
 Allows you to e.g. find the toy with which you swim fastest.
 
@@ -18,7 +18,7 @@ See [EXAMPLE](EXAMPLE.md) for a walkthrough
 
 ```bash
 
-git clone https://github.com/weltgeischt/selkietools.git #download from github
+git clone https://github.com/weltgeischt/SELKIEtools.git #download from github
 
 cd SELKIEtools #navigate to toolbox
 
