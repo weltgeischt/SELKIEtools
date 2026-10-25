@@ -132,7 +132,7 @@ as specified in `SETTINGS/PATHS/general_paths.yml`
 Details on what the script does, what options are available, and how to enter things?
 
 ```bash
-ecetools <command> -h   
+selkie <command> -h   
 ```
 
 
