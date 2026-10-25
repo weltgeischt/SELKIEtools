@@ -147,6 +147,17 @@ class Interval(FeatureEnabler):
         cumdist = np.sum([spl.dist for spl in self.splits[1:-1]])
         return cumdur/cumdist * 100
 
+    @property
+    def stroke_len(self):
+        return self.dist/self.strokes
+
+    @property
+    def stroke_len_c(self):
+        cumdist = np.sum([spl.dist for spl in self.splits[1:-1]])
+        cumstrokes = np.sum([spl.strokes for spl in self.splits[1:-1]])
+
+        return cumdist/cumstrokes
+
 
 
     @property
@@ -239,6 +250,10 @@ class Split(FeatureEnabler):
     @property
     def strokes_per_min(self):
         return self.strokes/self.dur*60.
+
+    @property
+    def stroke_len(self):
+        return self.dist/self.strokes
 
 class TestGroup(FeatureEnabler):
 

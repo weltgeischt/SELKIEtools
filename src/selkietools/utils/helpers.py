@@ -2,9 +2,26 @@ import os
 import sys
 import logging
 import datetime
+import numpy as np
+import inspect
+
+def maybe_embed(args):
+    if getattr(args, 'debug', False):
+        from IPython import start_ipython
+        caller = inspect.currentframe().f_back
+        if caller.f_locals is caller.f_globals:
+            ns = caller.f_globals
+        else:
+            ns = {**caller.f_globals, **caller.f_locals}
+        start_ipython(argv=[], user_ns=ns)
 
 
-def str_to_sec(time_str):
+def str_to_sec(time_str,invalid='--',replaceval=np.nan):
+
+    if time_str==invalid:
+        print('WARNING: invalid time <%s>, putting %s'%(invalid,replaceval))
+        return np.nan
+
     if time_str.count('.'):
         reststr,subsec0 = time_str.split('.')
         subsec = int(subsec0)
@@ -12,7 +29,9 @@ def str_to_sec(time_str):
         subsec = 0
         reststr = time_str
 
+
     n_u = reststr.count(':')
+
     if n_u == 0:
         ss = int(reststr)
         hh, mm = 0, 0
@@ -21,6 +40,7 @@ def str_to_sec(time_str):
         hh = 0
     elif n_u == 2:
         hh,mm,ss = reststr.split(':')
+
 
     return int(hh) * 60*60 + int(mm) * 60 + int(ss) + 0.1*subsec
 

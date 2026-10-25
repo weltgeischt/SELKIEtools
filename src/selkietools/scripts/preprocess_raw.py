@@ -10,6 +10,7 @@ Output: __processed.xlsx
 
 
 import warnings
+import sys
 import pandas as pd
 import yaml
 import os
@@ -48,8 +49,7 @@ parser.add_argument('-debug', action='store_true',
 
 args = parser.parse_args()
 
-if args.debug:
-    from IPython import embed; embed()
+hf.maybe_embed(args)#drop to ipython if debug
 
 pdict = pathfns.load_settings(args.pathpath if args.pathpath != 'default' else None)
 
@@ -65,6 +65,14 @@ else:
 outdir = pathfns.resolve_dict_fallbacks(pdict,args,'outdir')
 outfilename = pathfns.resolve_file(args.outfile, session_id, outdir)
 
+if os.path.isfile(outfilename):
+    logger.warning('Output file %s already exists.',outfilename)
+    overwrite = input('Type <yes> if you want to overwrite it.')
+    if overwrite == 'yes':
+        logger.warning('Overwriting existing file.')
+    else:
+        logger.info('Exiting script.')
+        sys.exit()
 
 logger.info('Reading csv %s',csvfile)
 
@@ -89,12 +97,18 @@ df = df.drop(df[df['run_id'] == convdict['Summary_row']].index)
 #adjust format of cells
 time_cols = ['time', 'ctime', 'pace', 'pace_max']
 int_cols = ['lengths','dist','swolf','hr_avg','hr_max','strokes']
+
+
+invalid = np.nan
+to_int_or_nan = lambda x: int(x) if x.isdigit() else invalid
+
+
 for col in time_cols:
     df[col] = df[col].apply(hf.str_to_sec)
 for col in int_cols:
     if type(df[col][0]) == type('teststr'):
         df[col] = df[col].apply(lambda x: x.replace(',',''))
-        df[col] = df[col].apply(lambda x: int(x))
+        df[col] = df[col].apply(to_int_or_nan)
 
 #separate overall rep time from lane-split times
 myexp_full = '^(\d+)(?!.)'
@@ -109,6 +123,7 @@ df_main = df_main.reindex(columns = newcols+df_main.columns.tolist())
 df_main['block'] = ''
 df_main['cond'] = ''
 df_main['usable'] = '+'
+
 
 logger.info('Creating from templates.')
 

@@ -11,9 +11,6 @@ Preprocess, annotate and visualize your swim data.
 
 Allows you to e.g. identify the toy with which you swim fastest.
 
-
-See [EXAMPLE](EXAMPLE.md) for a walkthrough
-
 ## Installation
 
 ```bash
@@ -53,7 +50,7 @@ name by which you would like to refer to this session.
 
 
 ```bash
-selkie process_csv /path/to/my/csvexport/activity_24766304204.csv  -session_id KH241021 -N_cond 4
+selkie process_csv /path/to/my/csvexport/activity_24766304204.csv  -session_id KH261002 -N_cond 4
 ```
 
 This creates session_id__processed.xlsx in `outdir` as
@@ -106,8 +103,10 @@ Example of edited metadata sheet:
 
 ## 3. Plot session data
 
+Just call with the session id as given in step 1, to plot a session
+
 ```bash
-selkie plot_session KH241021
+selkie plot_session KH261002
 ```
 This creates a folder with session visualizations. The folder is by default located
 as specified in `SETTINGS/PATHS/general_paths.yml` 
@@ -122,36 +121,10 @@ as specified in `SETTINGS/PATHS/general_paths.yml`
 <!-- COMMANDS:START -->
 <!-- COMMANDS:END -->
 
-
-## Saving and naming of figures produced
-
-Files generated are by default named `<nwbstem>__<suffix>` and saved in the
-`outdir` local `SETTINGS/PATHS/general_paths.yml` (not committed;
-see [general_paths.example.yml](SETTINGS/PATHS/general_paths.example.yml) for
-the expected structure, and [Installation](#installation) for how to set
-yours up). You can override this on a per-call basis with the `-outdir` option and by
-passing a full path instead of a tag to as an option (e.g.
-`ecetools plot_spectrum /path/to/nwbfile.nwb -lfpfile /custom/path/x.h5`). This overrides the default, but loses the
-ability to refer to that file by tag in later steps.
-
-For this reason, it's recommended to run the pipeline with default settings
-and copy files to their desired final locations only after processing with
-ecephys_toolbox is complete. See [File tags](#file-tags) for the full list of
-suffixes and what produces them.
-
-**Naming example:** if your original nwb file is called `minnie261005-probe3.nwb`,
-then `<nwbstem>` is `minnie261005-probe3`, and the resulting extracted LFP file
-would be named `minnie261005-probe3__lfp.h5`.
-
-
-
 ## Config files
 
 <!-- CONFIGS:START -->
 <!-- CONFIGS:END -->
-
-
-## Notes on usage
 
 
 ## Getting help
