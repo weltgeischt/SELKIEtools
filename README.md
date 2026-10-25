@@ -138,6 +138,5 @@ selkie <command> -h
 
 ## Developer TODO
 
-- [ ] Integrate visualization script from Runmaroe
-- [ ] Make database with paddles, subjects, sessions
-- [ ] Make multi-session/user evaluation
+- [ ] Make database with paddles, subjects, sessions?
+- [ ] Design multi-session/user evaluation
