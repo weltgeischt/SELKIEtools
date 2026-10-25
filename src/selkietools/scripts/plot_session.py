@@ -147,7 +147,7 @@ for B in S.namedBlocks:
 
 ############################################
 #summary per block
-attrs = ['pace','centerpace','strokes_per_min','stroke_len_c']
+attrs = ['pace','centerpace','strokes_per_min','stroke_len']
 yvec = np.arange(len(attrs))
 jit_amp = 0.2
 figdict = {}
@@ -195,8 +195,6 @@ for savestr,myfig in figdict.items():
 unique_conds = list(dict.fromkeys(G.condition for G in S.testgroups if not G.condition.id=='na'))
 comp_blocks = [B for B in S.namedBlocks if len(B.conditions)>1]
 
-attrs = ['pace','centerpace','strokes_per_min','stroke_len_c']
-yvec = np.arange(len(attrs))
 jit_amp = 0.2
 f, ax = plt.subplots(figsize=(6, 3.5))
 ax.set_title('%s block %s dist: %im' % (B.session.id, B.id, B.dist), fontsize=10)
