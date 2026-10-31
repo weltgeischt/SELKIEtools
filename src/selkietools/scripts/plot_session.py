@@ -197,7 +197,7 @@ comp_blocks = [B for B in S.namedBlocks if len(B.conditions)>1]
 
 jit_amp = 0.2
 f, ax = plt.subplots(figsize=(6, 3.5))
-ax.set_title('%s block %s dist: %im' % (B.session.id, B.id, B.dist), fontsize=10)
+ax.set_title('%s' % (B.session.id), fontsize=10)
 
 for bb,B in enumerate(comp_blocks):
     TGs = [G for G in S.testgroups if G.block==B]
