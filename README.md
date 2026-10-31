@@ -161,7 +161,7 @@ todo
 
 ## Getting help
 
-Details on what the script does, what options are available, and how to enter things?
+Details on what a command does, what options are available, and how to enter things:
 
 ```bash
 selkie <command> -h   
