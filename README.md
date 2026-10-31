@@ -7,7 +7,7 @@
 
 **S**wim **E**quipment **L**over's **K**omparative **I**nterval **E**valuation tools.
 
-Preprocess, annotate and visualize your swim data.
+Preprocess, annotate, and visualize your swim data.
 
 Allows you to e.g. identify the toy with which you swim fastest.
 
@@ -36,74 +36,97 @@ cp SETTINGS/PATHS/general_paths.example.yml SETTINGS/PATHS/general_paths.yml
 ```
 
 
+## 1. Download your data and prepare annotation
 
-## 1. Preprocess csv Export
-
-For a swim session, export the splits to csv from your Garmin page.
+**Export Splits to CSV:** First, export the data of a swim session from your Garmin page:
 ![export_csv_from_garmin.png](example_files/export_csv_from_garmin.png)
 
 
-Preprocess this file with selkietools into an editable table.
+Next, **preprocess** this file with selkietools into an editable table via the `process_csv` command.  
+
+
 Through the argument `N_cond` you specify the number of conditions used,
-e.g. if you test 3 paddles you would put `-N_cond 3`. `sesssion_id` is the 
+e.g. if you tested three different paddles, you would enter `-N_cond 3`. `sesssion_id` is the 
 name by which you would like to refer to this session.
 
-
 ```bash
-selkie process_csv /path/to/my/csvexport/activity_24766304204.csv  -session_id KH261002 -N_cond 4
+selkie process_csv /path/to/my/csvexport/activity_24766304204.csv -session_id KH261002 -N_cond 4 # 4 different paddles tested here
 ```
 
-This creates session_id__processed.xlsx in `outdir` as
-specified in `SETTINGS/PATHS/general_paths.yml` (if not further specified outifle)
+This creates session_id__processed.xlsx in the folder `outdir` as
+specified in `SETTINGS/PATHS/general_paths.yml` (you could also specify `outfile` directly with the command).
 
 
-## 2. Annotate table
+## 2. Annotate table to identify conditions
 
-Please edit the following sheets of the created xlsx file:
+In the xlsx file you just created, please edit the sheets *summary*, *cond_spec*, and *metadata* as follows:
 
-**summary**
-The sheet looks like this:
-![summary_proc.png](example_files/summary_proc.png)
+
+### summary
+
+The table looks like this:  
+
+<img src="example_files/summary_proc.png" width="600">
+
 
 Each row corresponds to an interval. Please mark the blocks (column `block`) 
-with unique ids and the conditions (column `cond`, resolved in sheet `cond_spec`)
-with unique ids or letters. If an interval in a block is not usable, please replace `+`
-with `-` in column `usable`.
+with unique block ids and the conditions (column `cond`, resolved in sheet `cond_spec`)
+with unique condition ids or letters. The unique ids can be letters or numbers, whatever you like.
+Condition ids must match with the ids resolving the conditions in the table `cond_spec`, however.
+If an interval in a block is not usable, please replace `+`
+with `-` in the column `usable`.
 
 
-Example of edited summary file:
-![summary_edited.png](example_files/summary_edited.png)
-In this example there were two blocks, one I called x1 and one x2. These are annoted in the
-colum `block`.
+Example of edited summary table:
+
+<img src="example_files/summary_edited.png" width="600">
+
+In this example there were two blocks, as annoted in the column `block`: one I called x1 and one x2.
 In each block, I used four different paddles in a pyramid setup, starting with paddle A. 
-The "paddle" in this case is the conditon (column `cond`)
+The "paddle" in this case is the conditon (column `cond`).
 
-**cond_spec**
-The sheet looks like this:
-![cond_spec_proc.png](example_files/cond_spec_proc.png)
 
-Please enter what each condition (A,B,C,D) in this case means, and which
-condition you would like to use as a reference to express the relative
-performance of the other conditions. You can also change the colors
-by which the different conditions will be visualized. The field `pref_rank` allows
-you to rank the equipment conditions according to preference (rank 1 is best).  
+### cond_spec
 
-Example of edited cond_spce sheet:
-![cond_spec_edited.png](example_files/cond_spec_edited.png)
+The table looks like this:
 
-Here my conditions are paddles and the FspM is my reference paddle.
+<img src="example_files/cond_spec_proc.png" width="450">
 
-**metadata**
-The sheet looks like this:
+Please enter what each condition (A,B,C,D in this case, as I specified four conditions in `process_csv`) 
+means, and which condition you would like to use as a reference. 
+The performances during other conditions
+(e.g. paddle usage) will then be analyzed relative to the reference condition.
+You can also change the colors by which the different conditions will be visualized, by changing
+the background color in column `disp_color`.
+The column `pref_rank` allows you to rank the equipment conditions according to preference (rank 1 is best).  
 
-![metadata_proc.png](example_files/metadata_proc.png)
+Example of edited cond_spec table:
 
-Example of edited metadata sheet:
-![metadata_edited.png](example_files/metadata_edited.png)
+
+<img src="example_files/cond_spec_edited.png" width="450">
+
+In this example, C is the reference paddle and the performances of other paddles will be reported
+relative to C, e.g. 2.2% faster with paddle B compared to reference paddle C.
+Here, C, the FspM paddle, felt best (`pref_rank` 1), A and D shared second place.
+
+
+### metadata
+
+The table looks like this:
+
+<img src="example_files/metadata_proc.png" width="350">
+
+
+Example of edited metadata table:
+
+<img src="example_files/metadata_edited.png" width="350">
+
+
 
 ## 3. Plot session data
 
-Just call with the session id as given in step 1, to plot a session
+Use the command `plot_session` with the session id as given in step 1, to visualize and compare
+performances across conditions in a session.
 
 ```bash
 selkie plot_session KH261002
@@ -111,20 +134,29 @@ selkie plot_session KH261002
 This creates a folder with session visualizations. The folder is by default located
 as specified in `SETTINGS/PATHS/general_paths.yml` 
 
+[Here](SESSION_VIS.md) you find examples of figures generated by the
+`plot_session` command.
+
+
 
 ## 4. Compare performance across sessions 
+ 
+todo
 
 
 
-## Commands
+
+<!-- ## Commands -->
 
 <!-- COMMANDS:START -->
 <!-- COMMANDS:END -->
 
-## Config files
+<!--## Config files -->
 
 <!-- CONFIGS:START -->
 <!-- CONFIGS:END -->
+
+
 
 
 ## Getting help
