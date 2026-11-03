@@ -21,7 +21,10 @@ cd SELKIEtools #navigate to toolbox
 
 #create virtual environment (recommended):
 python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
+#BASH:
+source .venv/bin/activate
+# Cmd:
+.venv\Scripts\activate
 
 #install
 pip install -e . #this installs the selkie command and all dependencies
@@ -31,7 +34,10 @@ pip install -e . #this installs the selkie command and all dependencies
 Set up your settings file once, if you don't want to repeat them each time:
 
 ```bash
-cp SETTINGS/PATHS/general_paths.example.yml SETTINGS/PATHS/general_paths.yml 
+#Cmd:
+copy SETTINGS/PATHS/general_paths.example.yml SETTINGS/PATHS/general_paths.yml
+#BASH:
+cp SETTINGS/PATHS/general_paths.example.yml SETTINGS/PATHS/general_paths.yml
 # then edit general_paths.yml to point at your own config/output locations
 ```
 
